@@ -1,4 +1,5 @@
 package com.expense.server.dao;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,26 +12,30 @@ public class ReportDAO {
 
         String sql = """
             SELECT
-                e.user_id,
-                e.category_id,
-                SUM(e.amount) AS spent,
-                b.amount AS budget,
-                b.amount - SUM(e.amount) AS remaining,
-                CASE 
-                    WHEN (SUM(e.amount) / b.amount) * 100 < 70 THEN 'Safe'
-                    WHEN (SUM(e.amount) / b.amount) * 100 BETWEEN 70 AND 100 THEN 'Warning'
-                    WHEN (SUM(e.amount) / b.amount) * 100 > 100 THEN 'Danger'
-                END AS status
-            FROM expenses e
-            JOIN budgets b 
-                ON b.user_id = e.user_id
-                AND b.category_id = e.category_id
-            WHERE e.user_id = ?
-            AND e.DATE_CREATED >= TRUNC(SYSDATE, 'MM')
-            AND e.DATE_CREATED < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1)
-            GROUP BY 
-                e.user_id, e.category_id, b.amount
-        """;
+                  b.user_id,
+                  b.category_id,
+                  c.name AS category_name,
+                  NVL(SUM(e.amount), 0) AS spent,
+                  b.amount AS budget,
+                  b.amount - NVL(SUM(e.amount), 0) AS remaining,
+                  CASE
+                      WHEN b.amount = 0 THEN 'Safe'
+                      WHEN (NVL(SUM(e.amount), 0) / b.amount) * 100 < 70 THEN 'Safe'
+                      WHEN (NVL(SUM(e.amount), 0) / b.amount) * 100 BETWEEN 70 AND 100 THEN 'Warning'
+                      WHEN (NVL(SUM(e.amount), 0) / b.amount) * 100 > 100 THEN 'Danger'
+                  END AS status
+            FROM budgets b
+            JOIN categories c
+                ON b.category_id = c.category_id
+            LEFT JOIN expenses e
+                ON e.user_id = b.user_id
+                AND e.category_id = b.category_id
+                AND e.DATE_CREATED >= TRUNC(SYSDATE, 'MM')
+                AND e.DATE_CREATED < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1)
+            WHERE b.user_id = ?
+            GROUP BY
+                  b.user_id, b.category_id, c.name, b.amount
+            """;
 
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -42,6 +47,7 @@ public class ReportDAO {
                 BudgetReport r = new BudgetReport();
                 r.setUserId(rs.getInt("user_id"));
                 r.setCategoryId(rs.getInt("category_id"));
+                r.setCategoryName(rs.getString("category_name"));
                 r.setSpent(rs.getDouble("spent"));
                 r.setBudget(rs.getDouble("budget"));
                 r.setRemaining(rs.getDouble("remaining"));

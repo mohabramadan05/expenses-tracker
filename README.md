@@ -642,6 +642,41 @@ Generate a comprehensive budget report showing spending vs. budget for each cate
 
 ---
 
+### 2. Get Monthly Overall Budget Report
+
+Generate a comprehensive budget report showing spending vs. budget for all budgets categories.
+
+**Endpoint:** `POST /api/reports2`
+
+**Request Body:**
+```json
+{
+  "userId": 1
+}
+```
+
+**Success Response:**
+
+**Code:** `200 OK`
+```json
+[
+  {
+    "userId": 1,
+    "spent_this_month": 600.00,
+    "remaining_budget": 1200.00
+  }
+]
+```
+
+**Field Descriptions:**
+| Field | Type | Description |
+|-------|------|-------------|
+| userId | integer | ID of the user |
+| spent_this_month | decimal | Total spent amount |
+| remaining_budget | decimal | Total remaining amount |
+
+---
+
 ## Data Models
 
 ### User
@@ -788,4 +823,5 @@ GET    /api/categories         - Get all categories
 ### Reports
 ```
 POST   /api/reports            - Get budget report for user
+POST   /api/reports2            - Get budget report for user
 ```

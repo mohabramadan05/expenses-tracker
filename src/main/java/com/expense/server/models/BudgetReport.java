@@ -3,6 +3,7 @@ package com.expense.server.models;
 public class BudgetReport {
     private int userId;
     private int categoryId;
+    private String categoryName;
     private double spent;
     private double budget;
     private double remaining;
@@ -54,4 +55,10 @@ public class BudgetReport {
         this.status = status;
     }
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }

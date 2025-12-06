@@ -18,6 +18,7 @@ public class ReportController {
         return new BudgetReportDto(
                 r.getUserId(),
                 r.getCategoryId(),
+                r.getCategoryName(),
                 r.getSpent(),
                 r.getBudget(),
                 r.getRemaining(),
@@ -25,11 +26,9 @@ public class ReportController {
         );
     }
 
-    /** POST /api/reports/budget */
     public String getMonthlyBudgetReport(Request req, Response res) {
         res.type("application/json");
 
-        // Expect JSON: {"userId": 1}
         int userId = gson.fromJson(req.body(), BudgetReportDto.class).getUserId();
 
         List<BudgetReport> reports = reportDao.getBudgetReport(userId);

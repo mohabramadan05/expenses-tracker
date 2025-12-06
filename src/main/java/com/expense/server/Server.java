@@ -5,7 +5,7 @@ import com.expense.server.db.Database;
 import static spark.Spark.*;
 
 public class Server {
-    public static void main(String[] args) {
+    public static void runServer() {
         if (!Database.testConnection()) {
             System.err.println("Failed to connect to database. Exiting...");
             return;
@@ -17,6 +17,7 @@ public class Server {
         CategoryController categoryController = new CategoryController();
         BudgetController budgetcontroller = new BudgetController();
         ReportController reportController = new ReportController();
+        ReportController2 reportController2 = new ReportController2();
 
         before((request, response) -> {
             response.header("Access-Control-Allow-Origin", "*");
@@ -59,6 +60,7 @@ public class Server {
             delete("/budgets/:id", budgetcontroller::deleteBudget);
             //report
             post("/reports", reportController::getMonthlyBudgetReport);
+            post("/reports2", reportController2::getMonthlyBudgetReport);
         });
 
         exception(Exception.class, (exception, request, response) -> {
@@ -104,6 +106,7 @@ public class Server {
         System.out.println("===================================");
         System.out.println("Reports:");
         System.out.println("  post    /api/reports     - Get user reports");
+        System.out.println("  post    /api/reports2    - Get user reports 2");
         System.out.println("===================================\n");
     }
 }

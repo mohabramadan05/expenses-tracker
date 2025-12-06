@@ -3,15 +3,25 @@ package com.expense.common.dto;
 public class BudgetReportDto {
     private int userId;
     private int categoryId;
+    private String categoryName;
     private double spent;
     private double budget;
     private double remaining;
     private String status;
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public BudgetReportDto() {}
-    public BudgetReportDto(int userId, int categoryId, double spent, double budget, double remaining, String status) {
+    public BudgetReportDto(int userId, int categoryId,String categoryName, double spent, double budget, double remaining, String status) {
         this.userId = userId;
         this.categoryId = categoryId;
+        this.categoryName = categoryName;
         this.spent = spent;
         this.budget = budget;
         this.remaining = remaining;
