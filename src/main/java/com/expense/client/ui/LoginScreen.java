@@ -1,6 +1,8 @@
 package com.expense.client.ui;
 
 import com.expense.client.api.ApiClient;
+import com.expense.client.api.ApiService;
+import com.expense.client.api.ApiServiceImpl;
 import com.expense.client.session.Session;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,6 +20,21 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class LoginScreen {
+
+    private final ApiService api;
+
+    public LoginScreen() {
+        this.api = new ApiServiceImpl();  // real one
+    }
+
+    public LoginScreen(ApiService api) {
+        this.api = api;                   // mock in tests
+    }
+
+    protected void openLandingPage() {
+        new LandingPage().show(new Stage());
+    }
+
 
     public void show(Stage stage) {
 
@@ -109,7 +126,8 @@ public class LoginScreen {
             );
 
             try {
-                String response = ApiClient.post("/users/login", jsonBody);
+//                String response = ApiClient.post("/users/login", jsonBody);
+                String response = api.login(username, password);
 
                 System.out.println("API Response: " + response);
 
@@ -147,6 +165,12 @@ public class LoginScreen {
         HBox buttonBox = new HBox(15, loginButton, signupButton);
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setPadding(new Insets(20, 0, 0, 0));
+
+        usernameField.setId("usernameField");
+        passwordField.setId("passwordField");
+        loginButton.setId("loginButton");
+        errorLabel.setId("errorLabel");
+
 
         // ---------- Main Login Box ----------
         VBox loginBox = new VBox(15,

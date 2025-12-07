@@ -1,6 +1,8 @@
 package com.expense.client.ui;
 
 import com.expense.client.api.ApiClient;
+import com.expense.client.api.ApiService;
+import com.expense.client.api.ApiServiceImpl;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,6 +15,17 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class SignupScreen {
+
+    private final ApiService apiService;
+
+    public SignupScreen(ApiService apiService) {
+        this.apiService = apiService;
+    }
+
+    public SignupScreen() {
+        this.apiService = new ApiServiceImpl(); // real implementation
+    }
+
 
     public void show(Stage stage) {
 
@@ -104,7 +117,7 @@ public class SignupScreen {
             );
 
             try {
-                String response = ApiClient.post("/users/signup", jsonBody);
+                String response = apiService.signup(fullName, username, password);
                 System.out.println("Signup API Response: " + response);
 
                 if (response.contains("error")) {
@@ -173,6 +186,13 @@ public class SignupScreen {
         HBox centerLayout = new HBox(160, signupCard, illustration);
         centerLayout.setAlignment(Pos.CENTER);
         centerLayout.setPadding(new Insets(90, 40, 40, 40));
+
+        nameField.setId("nameField");
+        emailField.setId("emailField");
+        passwordField.setId("passwordField");
+        confirmPasswordField.setId("confirmPasswordField");
+        createAccountButton.setId("createAccountButton");
+        errorLabel.setId("errorLabel");
 
         VBox root = new VBox(centerLayout);
         root.setStyle("-fx-background-color: #ffffff;");

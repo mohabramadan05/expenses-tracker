@@ -109,4 +109,9 @@ public class Server {
         System.out.println("  post    /api/reports2    - Get user reports 2");
         System.out.println("===================================\n");
     }
+
+    public static void stopServer() {
+        spark.Spark.stop();
+    }
+
 }

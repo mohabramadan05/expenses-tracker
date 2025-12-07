@@ -1,827 +1,244 @@
-# Expense Tracker API Documentation
+## 📦 Expense Manager — Full Project Documentation
 
-## Base URL
-```
-http://localhost:8080/api
-```
-
-## Overview
-This API provides endpoints for managing personal expenses, budgets, categories, and generating budget reports. Built with Spark Framework using JSON request/response format.
+Welcome to the **Expense Manager** system — a complete solution consisting of a  
+**JavaFX Client**, a **SparkJava + Gson Server**, and a **JUnit/TestFX Testing Suite**.  
+This main README provides an overview of the architecture, technologies, features,  
+and direct links to all module-level documentation.
 
 ---
 
-## Table of Contents
-1. [Authentication](#authentication)
-2. [Expense Endpoints](#expense-endpoints)
-3. [Budget Endpoints](#budget-endpoints)
-4. [Category Endpoints](#category-endpoints)
-5. [Report Endpoints](#report-endpoints)
-6. [Data Models](#data-models)
-7. [Status Codes](#status-codes)
+## 🧱 Project Structure
 
----
-
-## Authentication
-
-### 1. User Signup
-
-Register a new user account.
-
-**Endpoint:** `POST /api/users/signup`
-
-**Request Body:**
-```json
-{
-  "username": "johndoe",
-  "password": "securePassword123",
-  "fullName": "John Doe"
-}
 ```
-
-**Success Response:**
-
-**Code:** `201 CREATED`
-```json
-{
-  "message": "Signup successful"
-}
-```
-
-**Error Response:**
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Signup failed"
-}
+src
+│
+├───main
+│   ├───java
+│   │     └───com
+│   │           └───expense
+│   │                 ├───client # JavaFX Desktop Client
+│   │                 │     ├──api # API calls (HttpURLConnection / MockApiClient)
+│   │                 │     ├───session # Session management
+│   │                 │     └───ui # JavaFX UI
+│   │                 │         └───panels # Dashboard, Add Expense, View, Manage Budgets
+│   │                 │
+│   │                 ├───common # Shared DTOs
+│   │                 │     └───dto
+│   │                 │
+│   │                 └───server # Backend Server (Spark + Gson)
+│   │                       ├───controllers # REST endpoints
+│   │                       ├───dao # Database logic
+│   │                       ├───db # Database connection
+│   │                       └───models # Server-side models
+│   │
+│   └───resources # Images
+│
+└───test
+      └───java
+            └───com
+                  └───expense
+                        ├───client
+                        │     └───ui # TestFX tests
+                        └───server
+                              └───db # DB tests
 ```
 
 ---
 
-### 2. User Login
+## 🖥 Client — JavaFX Application
 
-Authenticate a user and retrieve user details.
+The client is built using **JavaFX 21**, offering:
 
-**Endpoint:** `POST /api/users/login`
+✔ Login & Signup  
+✔ Sidebar navigation  
+✔ Dashboard, Add Expenses, View Expenses, Manage Budgets  
+✔ REST communication using `HttpURLConnection`  
+✔ Uses `Session` class to store user data  
+✔ Uses DTO objects shared with backend
 
-**Request Body:**
-```json
-{
-  "username": "johndoe",
-  "password": "securePassword123"
-}
-```
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-{
-  "userId": 1,
-  "username": "johndoe",
-  "fullName": "John Doe"
-}
-```
-
-**Error Response:**
-
-**Code:** `401 UNAUTHORIZED`
-```json
-{
-  "error": "Invalid username or password"
-}
-```
+📄 **Client Documentation:**  
+👉 `src/main/java/com/expense/client/README.md`
 
 ---
 
-## Expense Endpoints
+## 🔧 Server — SparkJava Backend
 
-### 1. Get All Expenses for a User
+The backend uses:
 
-Retrieves all expenses for a specific user, ordered by date created (newest first).
+- **SparkJava (2.9.4)** for REST routes
+- **Gson** for JSON parsing
+- **DAO architecture** for database operations
+- **Oracle JDBC** for database connectivity
+- Simple and lightweight — NO Spring Boot
 
-**Endpoint:** `GET /api/expenses/all/:id`
-
-**URL Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | integer | User ID |
-
-**Request Example:**
-```http
-GET /api/expenses/all/1 HTTP/1.1
-Host: localhost:8080
-Content-Type: application/json
-```
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-[
-  {
-    "EXPENSE_ID": 1,
-    "USER_ID": 1,
-    "CATEGORY_ID": 5,
-    "AMOUNT": 45.50,
-    "NOTE": "Grocery shopping",
-    "DATE_CREATED": "2024-11-20T10:30:00.000+00:00"
-  },
-  {
-    "EXPENSE_ID": 2,
-    "USER_ID": 1,
-    "CATEGORY_ID": 3,
-    "AMOUNT": 120.00,
-    "NOTE": "Electric bill",
-    "DATE_CREATED": "2024-11-19T15:45:00.000+00:00"
-  }
-]
-```
-
-**Error Response:**
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Invalid ID format"
-}
-```
+📄 **Server Documentation:**  
+👉 `src/main/java/com/expense/server/README.md`
 
 ---
 
-### 2. Get Expense by ID
+## 🧪 Testing — JUnit + TestFX
 
-Retrieve a specific expense by its ID.
+This includes:
 
-**Endpoint:** `GET /api/expenses/:id`
+✔ UI Integration tests (TestFX)  
+✔ Mock API tests  
+✔ DAO tests  
+✔ Headless mode compatible with CI  
+✔ Mockito for mocking
 
-**URL Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | integer | Expense ID |
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-{
-  "EXPENSE_ID": 1,
-  "USER_ID": 1,
-  "CATEGORY_ID": 5,
-  "AMOUNT": 45.50,
-  "NOTE": "Grocery shopping",
-  "DATE_CREATED": "2024-11-20T10:30:00.000+00:00"
-}
-```
-
-**Error Responses:**
-
-**Code:** `404 NOT FOUND`
-```json
-{
-  "error": "Expense not found"
-}
-```
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Invalid ID format"
-}
-```
+📄 **Testing Documentation:**  
+👉 `src/test/java/com/expense/README.md`
 
 ---
 
-### 3. Create New Expense
+## 🚀 Technologies Used
 
-Add a new expense to the system.
+### **Client**
+- JavaFX 21
+- CSS
+- JUnit 5
+- TestFX
 
-**Endpoint:** `POST /api/expenses`
+### **Server**
+- SparkJava
+- Gson
+- Oracle JDBC
+- Custom controllers, DAO, DB layer
 
-**Request Body:**
-```json
-{
-  "USER_ID": 1,
-  "CATEGORY_ID": 5,
-  "AMOUNT": 45.50,
-  "NOTE": "Grocery shopping",
-  "DATE_CREATED": "2024-11-20T10:30:00.000+00:00"
-}
-```
-
-**Field Descriptions:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| USER_ID | integer | Yes | ID of the user creating the expense |
-| CATEGORY_ID | integer | Yes | Category ID for the expense |
-| AMOUNT | decimal | Yes | Expense amount (must be positive) |
-| NOTE | string | No | Optional description of the expense |
-| DATE_CREATED | datetime | Yes | Date when expense was created |
-
-**Success Response:**
-
-**Code:** `201 CREATED`
-```json
-{
-  "message": "Expense added successfully"
-}
-```
-
-**Error Responses:**
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Invalid request: [error details]"
-}
-```
-
-**Code:** `500 INTERNAL SERVER ERROR`
-```json
-{
-  "error": "Failed to add expense"
-}
-```
+### **Testing**
+- JUnit 5
+- TestFX
+- Mockito
 
 ---
 
-### 4. Update Expense
-
-Update an existing expense.
-
-**Endpoint:** `PUT /api/expenses/:id`
-
-**URL Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | integer | Expense ID to update |
-
-**Request Body:**
-```json
-{
-  "USER_ID": 1,
-  "CATEGORY_ID": 5,
-  "AMOUNT": 50.00,
-  "NOTE": "Updated grocery shopping",
-  "DATE_CREATED": "2024-11-20T10:30:00.000+00:00"
-}
-```
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-{
-  "message": "Expense updated successfully"
-}
-```
-
-**Error Responses:**
-
-**Code:** `404 NOT FOUND`
-```json
-{
-  "error": "Expense not found or update failed"
-}
-```
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Invalid request: [error details]"
-}
-```
-
----
-
-### 5. Delete Expense
-
-Delete an expense by ID.
-
-**Endpoint:** `DELETE /api/expenses/:id`
-
-**URL Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | integer | Expense ID to delete |
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-{
-  "message": "Expense deleted successfully"
-}
-```
-
-**Error Responses:**
-
-**Code:** `404 NOT FOUND`
-```json
-{
-  "error": "Expense not found or delete failed"
-}
-```
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Invalid ID format"
-}
-```
-
----
-
-## Budget Endpoints
-
-### 1. Get All Budgets for a User
-
-Retrieve all budgets set by a specific user.
-
-**Endpoint:** `GET /api/budgets/all/:id`
-
-**URL Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | integer | User ID |
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-[
-  {
-    "BUDGET_ID": 1,
-    "USER_ID": 1,
-    "CATEGORY_ID": 5,
-    "AMOUNT": 500.00
-  },
-  {
-    "BUDGET_ID": 2,
-    "USER_ID": 1,
-    "CATEGORY_ID": 3,
-    "AMOUNT": 200.00
-  }
-]
-```
-
-**Error Response:**
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Invalid ID format"
-}
-```
-
----
-
-### 2. Get Budget by ID
-
-Retrieve a specific budget by its ID.
-
-**Endpoint:** `GET /api/budgets/:id`
-
-**URL Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | integer | Budget ID |
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-{
-  "BUDGET_ID": 1,
-  "USER_ID": 1,
-  "CATEGORY_ID": 5,
-  "AMOUNT": 500.00
-}
-```
-
-**Error Responses:**
-
-**Code:** `404 NOT FOUND`
-```json
-{
-  "error": "budget not found"
-}
-```
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Invalid ID format"
-}
-```
-
----
-
-### 3. Create New Budget
-
-Add a new budget for a category.
-
-**Endpoint:** `POST /api/budgets`
-
-**Request Body:**
-```json
-{
-  "USER_ID": 1,
-  "CATEGORY_ID": 5,
-  "AMOUNT": 500.00
-}
-```
-
-**Field Descriptions:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| USER_ID | integer | Yes | ID of the user setting the budget |
-| CATEGORY_ID | integer | Yes | Category ID for the budget |
-| AMOUNT | decimal | Yes | Budget amount (must be positive) |
-
-**Success Response:**
-
-**Code:** `201 CREATED`
-```json
-{
-  "message": "Budget added successfully"
-}
-```
-
-**Error Responses:**
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Invalid request: [error details]"
-}
-```
-
-**Code:** `500 INTERNAL SERVER ERROR`
-```json
-{
-  "error": "Failed to add budget"
-}
-```
-
----
-
-### 4. Update Budget
-
-Update an existing budget.
-
-**Endpoint:** `PUT /api/budgets/:id`
-
-**URL Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | integer | Budget ID to update |
-
-**Request Body:**
-```json
-{
-  "USER_ID": 1,
-  "CATEGORY_ID": 5,
-  "AMOUNT": 600.00
-}
-```
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-{
-  "message": "Budget updated successfully"
-}
-```
-
-**Error Responses:**
-
-**Code:** `404 NOT FOUND`
-```json
-{
-  "error": "Budget not found or update failed"
-}
-```
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Invalid request: [error details]"
-}
-```
-
----
-
-### 5. Delete Budget
-
-Delete a budget by ID.
-
-**Endpoint:** `DELETE /api/budgets/:id`
-
-**URL Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | integer | Budget ID to delete |
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-{
-  "message": "Budget deleted successfully"
-}
-```
-
-**Error Responses:**
-
-**Code:** `404 NOT FOUND`
-```json
-{
-  "error": "Budget not found or delete failed"
-}
-```
-
-**Code:** `400 BAD REQUEST`
-```json
-{
-  "error": "Invalid ID format"
-}
-```
-
----
-
-## Category Endpoints
-
-### 1. Get All Categories
-
-Retrieve all expense categories available in the system.
-
-**Endpoint:** `GET /api/categories`
-
-**Request Example:**
-```http
-GET /api/categories HTTP/1.1
-Host: localhost:8080
-Content-Type: application/json
-```
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-[
-  {
-    "CATEGORY_ID": 1,
-    "NAME": "Food & Dining",
-    "DESCRIPTION": "Groceries, restaurants, cafes"
-  },
-  {
-    "CATEGORY_ID": 2,
-    "NAME": "Transportation",
-    "DESCRIPTION": "Gas, public transit, parking"
-  },
-  {
-    "CATEGORY_ID": 3,
-    "NAME": "Utilities",
-    "DESCRIPTION": "Electric, water, internet bills"
-  }
-]
-```
-
----
-
-## Report Endpoints
-
-### 1. Get Monthly Budget Report
-
-Generate a comprehensive budget report showing spending vs. budget for each category.
-
-**Endpoint:** `POST /api/reports`
-
-**Request Body:**
-```json
-{
-  "userId": 1
-}
-```
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-[
-  {
-    "userId": 1,
-    "categoryId": 5,
-    "spent": 450.00,
-    "budget": 500.00,
-    "remaining": 50.00,
-    "status": "On Track"
-  },
-  {
-    "userId": 1,
-    "categoryId": 3,
-    "spent": 220.00,
-    "budget": 200.00,
-    "remaining": -20.00,
-    "status": "Over Budget"
-  }
-]
-```
-
-**Field Descriptions:**
-| Field | Type | Description |
-|-------|------|-------------|
-| userId | integer | ID of the user |
-| categoryId | integer | Category ID |
-| spent | decimal | Total amount spent in this category |
-| budget | decimal | Budget amount set for this category |
-| remaining | decimal | Remaining budget (negative if over budget) |
-| status | string | Budget status (e.g., "On Track", "Over Budget") |
-
----
-
-### 2. Get Monthly Overall Budget Report
-
-Generate a comprehensive budget report showing spending vs. budget for all budgets categories.
-
-**Endpoint:** `POST /api/reports2`
-
-**Request Body:**
-```json
-{
-  "userId": 1
-}
-```
-
-**Success Response:**
-
-**Code:** `200 OK`
-```json
-[
-  {
-    "userId": 1,
-    "spent_this_month": 600.00,
-    "remaining_budget": 1200.00
-  }
-]
-```
-
-**Field Descriptions:**
-| Field | Type | Description |
-|-------|------|-------------|
-| userId | integer | ID of the user |
-| spent_this_month | decimal | Total spent amount |
-| remaining_budget | decimal | Total remaining amount |
-
----
-
-## Data Models
-
-### User
-```json
-{
-  "userId": "integer - Unique user identifier",
-  "username": "string - Username for login",
-  "password": "string - User password (plain text in request, hashed in storage)",
-  "fullName": "string - User's full name"
-}
-```
-
-### Expense
-```json
-{
-  "EXPENSE_ID": "integer - Unique expense identifier",
-  "USER_ID": "integer - ID of the user who created the expense",
-  "CATEGORY_ID": "integer - ID of the expense category",
-  "AMOUNT": "decimal - Expense amount",
-  "NOTE": "string - Optional description of the expense",
-  "DATE_CREATED": "datetime - Timestamp when expense was created"
-}
-```
-
-### Budget
-```json
-{
-  "BUDGET_ID": "integer - Unique budget identifier",
-  "USER_ID": "integer - ID of the user who set the budget",
-  "CATEGORY_ID": "integer - ID of the category for this budget",
-  "AMOUNT": "decimal - Budget amount"
-}
-```
-
-### Category
-```json
-{
-  "CATEGORY_ID": "integer - Unique category identifier",
-  "NAME": "string - Category name",
-  "DESCRIPTION": "string - Category description"
-}
-```
-
-### Budget Report
-```json
-{
-  "userId": "integer - ID of the user",
-  "categoryId": "integer - Category ID",
-  "spent": "decimal - Total amount spent",
-  "budget": "decimal - Budget amount",
-  "remaining": "decimal - Remaining budget",
-  "status": "string - Budget status"
-}
-```
-
----
-
-## Status Codes
-
-| Code | Description |
-|------|-------------|
-| 200 | Success - Request completed successfully |
-| 201 | Created - Resource created successfully |
-| 400 | Bad Request - Invalid input or malformed request |
-| 401 | Unauthorized - Invalid credentials |
-| 404 | Not Found - Resource doesn't exist |
-| 500 | Internal Server Error - Server-side error |
-
----
-
-## CORS Configuration
-
-The API supports Cross-Origin Resource Sharing (CORS) with the following headers:
-
-```
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
-Access-Control-Allow-Headers: Content-Type, Authorization
-```
-
----
-
-## Error Handling
-
-All error responses follow a consistent JSON format:
-
-```json
-{
-  "error": "Error description here"
-}
-```
-
-For successful operations that don't return data:
-
-```json
-{
-  "message": "Success message here"
-}
-```
-
----
-
-## Notes
-
-- All requests and responses use JSON format
-- Content-Type header should be set to `application/json`
-- Dates are in ISO 8601 format
-- All amounts are in decimal format with two decimal places
-- The server runs on port 8080 by default
-
----
-
-## Quick Reference
-
-### Authentication
-```
-POST   /api/users/signup    - Register new user
-POST   /api/users/login     - Login user
-```
-
-### Expenses
-```
-GET    /api/expenses/all/:id   - Get all expenses for user
-GET    /api/expenses/:id       - Get specific expense
-POST   /api/expenses           - Create expense
-PUT    /api/expenses/:id       - Update expense
-DELETE /api/expenses/:id       - Delete expense
-```
-
-### Budgets
-```
-GET    /api/budgets/all/:id    - Get all budgets for user
-GET    /api/budgets/:id        - Get specific budget
-POST   /api/budgets            - Create budget
-PUT    /api/budgets/:id        - Update budget
-DELETE /api/budgets/:id        - Delete budget
-```
-
-### Categories
-```
-GET    /api/categories         - Get all categories
-```
-
-### Reports
-```
-POST   /api/reports            - Get budget report for user
-POST   /api/reports2            - Get budget report for user
-```
+## 📄 Maven Configuration (POM)
+
+Below is the **POM.xml** used for the entire project:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>expense-tracker</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-bom</artifactId>
+                <version>10.0.24</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <!-- SparkJava for REST server -->
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>2.9.4</version>
+        </dependency>
+
+        <!-- GSON for JSON parsing -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
+        <!-- Oracle JDBC driver -->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc11</artifactId>
+            <version>21.9.0.0</version>
+        </dependency>
+
+        <!-- JUnit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- TestFX -->
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <version>4.0.17</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>4.0.17</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Mockito -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>openjfx-monocle</artifactId>
+            <version>jdk-11+26</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JavaFX -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21.0.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>21.0.9</version>
+        </dependency>
+
+        <!-- Jackson (used by client for some parsing) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>com.example.MainApp</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

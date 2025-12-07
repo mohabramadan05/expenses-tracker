@@ -1,6 +1,7 @@
 package com.expense.client.ui.panels;
 
 import com.expense.client.api.ApiClient;
+//import com.expense.client.api.MockApiClient;
 import com.expense.client.session.Session;
 import com.expense.common.dto.BudgetReport2Dto;
 import com.expense.common.dto.BudgetReportDto;
@@ -174,6 +175,7 @@ public class Dashboard {
         try {
             String jsonBody = "{\"userId\":" + Session.getUserId() + "}";
             String response = ApiClient.post("/reports", jsonBody);
+//            String response = MockApiClient.post("/reports", jsonBody);
 
             if (response.contains("error")) {
                 System.err.println("API error: " + response);
@@ -193,6 +195,7 @@ public class Dashboard {
         try {
             String jsonBody = "{\"userId\":" + Session.getUserId() + "}";
             String response = ApiClient.post("/reports2", jsonBody);
+//            String response = MockApiClient.post("/reports2", jsonBody);
 
             if (response.contains("error")) {
                 System.err.println("API error: " + response);

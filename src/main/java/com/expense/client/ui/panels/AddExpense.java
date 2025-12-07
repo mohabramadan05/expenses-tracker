@@ -1,6 +1,7 @@
 package com.expense.client.ui.panels;
 
 import com.expense.client.api.ApiClient;
+//import com.expense.client.api.MockApiClient;
 import com.expense.client.session.Session;
 import com.expense.common.dto.CategoryDto;
 import com.google.gson.Gson;
@@ -124,7 +125,7 @@ public class AddExpense {
             new Thread(() -> {
                 try {
                     String response = ApiClient.post("/expenses", json);
-
+//                    String response = MockApiClient.post("/expenses", json);
                     Platform.runLater(() -> {
                         if (response.contains("error")) {
                             showAlert("Failed to add expense: " + response);
@@ -176,6 +177,7 @@ public class AddExpense {
         new Thread(() -> {
             try {
                 String response = ApiClient.get("/categories");
+//                String response = MockApiClient.get("/categories");
                 Gson gson = new Gson();
                 CategoryDto[] categories = gson.fromJson(response, CategoryDto[].class);
 

@@ -1,6 +1,7 @@
 package com.expense.client.ui.panels;
 
 import com.expense.client.api.ApiClient;
+//import com.expense.client.api.MockApiClient;
 import com.expense.client.session.Session;
 import com.expense.common.dto.CategoryDto;
 import com.expense.common.dto.ExpenseDto;
@@ -80,19 +81,19 @@ public class Expenses {
                 } else {
                     deleteBtn.setOnAction(e -> {
                         ExpenseDto expense = getTableView().getItems().get(getIndex());
+                        String path = "/expenses/" + expense.getId(); // your API path
+                        String response = null;
                         try {
-                            String path = "/expenses/" + expense.getId(); // your API path
-                            String response = ApiClient.delete(path);
-                            System.out.println("Deleted: " + response);
-
-                            // Remove from table
-                            getTableView().getItems().remove(expense);
-
+                            response = ApiClient.delete(path);
                         } catch (IOException ex) {
-                            ex.printStackTrace();
-                            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to delete expense: " + ex.getMessage(), ButtonType.OK);
-                            alert.showAndWait();
+                            throw new RuntimeException(ex);
                         }
+//                        String response = MockApiClient.delete(path);
+                        System.out.println("Deleted: " + response);
+
+                        // Remove from table
+                        getTableView().getItems().remove(expense);
+
                     });
 
                     HBox box = new HBox(10, deleteBtn);
@@ -118,6 +119,7 @@ public class Expenses {
             String endpoint = "/expenses/all/" + userId;
 
             String response = ApiClient.get(endpoint);
+//            String response = MockApiClient.get("/expenses/all/1");
 
             if (response.contains("error")) {
                 System.err.println("API Error: " + response);
@@ -140,6 +142,7 @@ public class Expenses {
             // Load categories only once
             if (cachedCategories == null) {
                 String response = ApiClient.get("/categories");
+//                String response = MockApiClient.get("/categories");
 
                 if (response.contains("error")) {
                     System.err.println("Failed to load categories: " + response);

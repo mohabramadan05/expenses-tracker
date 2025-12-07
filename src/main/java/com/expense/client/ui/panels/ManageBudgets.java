@@ -1,6 +1,7 @@
 package com.expense.client.ui.panels;
 
 import com.expense.client.api.ApiClient;
+//import com.expense.client.api.MockApiClient;
 import com.expense.client.session.Session;
 import com.expense.common.dto.BudgetDto;
 import com.expense.common.dto.CategoryDto;
@@ -90,6 +91,7 @@ public class ManageBudgets {
             // Load categories only once
             if (cachedCategories == null) {
                 String response = ApiClient.get("/categories");
+//                String response = MockApiClient.get("/categories");
 
                 if (response.contains("error")) {
                     System.err.println("Failed to load categories: " + response);
@@ -173,6 +175,7 @@ public class ManageBudgets {
     private static List<CategoryDto> fetchCategories() {
         try {
             String response = ApiClient.get("/categories");
+//            String response = MockApiClient.get("/categories");
             return new Gson().fromJson(
                     response,
                     new TypeToken<List<CategoryDto>>(){}.getType()
@@ -186,6 +189,7 @@ public class ManageBudgets {
     private static List<BudgetDto> fetchBudgets(int userId) {
         try {
             String response = ApiClient.get("/budgets/all/" + userId);
+//            String response = MockApiClient.get("/budgets/all/" + 1);
 
             return new Gson().fromJson(
                     response,
@@ -210,6 +214,7 @@ public class ManageBudgets {
             );
 
             String response = ApiClient.put("/budgets/" + b.getBUDGET_ID(), jsonBody);
+//            String response = MockApiClient.put("/budgets/" + b.getBUDGET_ID(), jsonBody);
 
             System.out.println("Update Response: " + response);
 

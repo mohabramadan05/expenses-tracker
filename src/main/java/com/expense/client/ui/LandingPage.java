@@ -3,7 +3,7 @@ package com.expense.client.ui;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -20,6 +20,7 @@ public class LandingPage {
     private Button addExpenseBtn;
     private Button viewExpensesBtn;
     private Button manageBudgetBtn;
+    private StackPane contentPane;
 
     public void show(Stage stage) {
         // ---------- LEFT NAVIGATION ----------
@@ -28,13 +29,19 @@ public class LandingPage {
         viewExpensesBtn = createNavButton("View Expenses");
         manageBudgetBtn = createNavButton("Manage Budgets");
 
+        // Set fx:id for TestFX
+        dashboardBtn.setId("dashboardBtn");
+        addExpenseBtn.setId("addExpenseBtn");
+        viewExpensesBtn.setId("viewExpensesBtn");
+        manageBudgetBtn.setId("manageBudgetBtn");
+
         VBox navBar = new VBox(15, dashboardBtn, addExpenseBtn, viewExpensesBtn, manageBudgetBtn);
         navBar.setPadding(new Insets(30, 15, 30, 15));
         navBar.setPrefWidth(200);
         navBar.setStyle("-fx-background-color: #fafafa;");
 
         // ---------- CONTENT AREA ----------
-        StackPane contentPane = new StackPane();
+        contentPane = new StackPane();
         contentPane.setPadding(new Insets(20));
         contentPane.setStyle("-fx-background-color: #fff;");
 
@@ -43,22 +50,10 @@ public class LandingPage {
         contentPane.getChildren().setAll(loadDashboardPage());
 
         // Navigation actions
-        dashboardBtn.setOnAction(e -> {
-            highlightButton(dashboardBtn);
-            contentPane.getChildren().setAll(loadDashboardPage());
-        });
-        addExpenseBtn.setOnAction(e -> {
-            highlightButton(addExpenseBtn);
-            contentPane.getChildren().setAll(loadAddExpensePage());
-        });
-        viewExpensesBtn.setOnAction(e -> {
-            highlightButton(viewExpensesBtn);
-            contentPane.getChildren().setAll(loadViewExpensesPage());
-        });
-        manageBudgetBtn.setOnAction(e -> {
-            highlightButton(manageBudgetBtn);
-            contentPane.getChildren().setAll(loadManageBudgetsPage());
-        });
+        dashboardBtn.setOnAction(e -> navigateTo(dashboardBtn, loadDashboardPage()));
+        addExpenseBtn.setOnAction(e -> navigateTo(addExpenseBtn, loadAddExpensePage()));
+        viewExpensesBtn.setOnAction(e -> navigateTo(viewExpensesBtn, loadViewExpensesPage()));
+        manageBudgetBtn.setOnAction(e -> navigateTo(manageBudgetBtn, loadManageBudgetsPage()));
 
         // ---------- MAIN LAYOUT ----------
         HBox root = new HBox(navBar, contentPane);
@@ -71,6 +66,11 @@ public class LandingPage {
         stage.show();
     }
 
+    private void navigateTo(Button button, Pane page) {
+        highlightButton(button);
+        contentPane.getChildren().setAll(page);
+    }
+
     // ---------- NAV BUTTON CREATION ----------
     private Button createNavButton(String text) {
         Button btn = new Button(text);
@@ -78,7 +78,7 @@ public class LandingPage {
         btn.setTextFill(Color.WHITE);
         btn.setPrefWidth(180);
         btn.setAlignment(Pos.CENTER_LEFT);
-        btn.setStyle("-fx-background-color: transparent; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: white; -fx-padding: 10 15;");
+        btn.setStyle(defaultButtonStyle());
         return btn;
     }
 
@@ -96,4 +96,8 @@ public class LandingPage {
         return "-fx-background-color: transparent; -fx-text-fill: grey; -fx-padding: 10 15; -fx-background-radius: 8;";
     }
 
+    // ---------- GETTER FOR TESTFX ----------
+    public StackPane getContentPane() {
+        return contentPane;
+    }
 }
