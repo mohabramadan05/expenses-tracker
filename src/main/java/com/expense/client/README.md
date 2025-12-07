@@ -100,22 +100,22 @@ mvn clean javafx:run
 ## 💻 Application Preview
 
 Login Page
-![Login](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/1.png?raw=true)
+![Login](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/docs/1.png?raw=true)
 
 Signup Page
-![Signup](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/2.png?raw=true)
+![Signup](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/docs/2.png?raw=true)
 
 Landing Page "Dashboard Panel"
-![Dashboard](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/3.png?raw=true)
+![Dashboard](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/docs/3.png?raw=true)
 
 Landing Page "Add Expenses Panel"
-![Add Expenses](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/4.png?raw=true)
+![Add Expenses](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/docs/4.png?raw=true)
 
 Landing Page "View Expenses Panel"
-![View Expenses](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/5.png?raw=true)
+![View Expenses](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/docs/5.png?raw=true)
 
 Landing Page "Manage Budgets Panel"
-![Manage Budgets](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/6.png?raw=true)
+![Manage Budgets](https://github.com/mohabramadan05/expenses-tracker/blob/main/src/main/resources/docs/6.png?raw=true)
 
 ---
 
